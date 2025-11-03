@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuth } from '../composables/auth';
+import { Line    } from 'vue-chartjs'
 
 const arduinoDetails = ref({});
 const datiByTipo = ref(null);
@@ -30,10 +31,11 @@ fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/${arduinoId}/dati/
 })
 .then(data => {
     console.log('Dati ricevuti:', data);
-    datiByTipo.value = Map.groupBy(data, (d) => d.tipo);
-    console.dir('Dati raggruppati per tipo:', [...datiByTipo.value.entries()]);
-    console.dir('Dati di tipo temperatura:', datiByTipo.value.get('LIGHT'));
-  })
+    datiByTipo.value = Map.groupBy(data,(d) => d.tipo);
+    const bydate = Map.groupBy(datiByTipo.value.get('LIGHT'),(d) => new Date(d.data_ora).toDateString());
+    console.log('Dati raggruppati per tipo:', datiByTipo.value);
+    console.log('Dati LIGHT raggruppati per data:', bydate);
+})
 .catch(error => {
     console.error('Errore durante il recupero dei dati:', error);
 });

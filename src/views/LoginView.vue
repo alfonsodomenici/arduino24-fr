@@ -16,7 +16,6 @@ fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/`, {
 })
 .then(response => response.json())
 .then(data => {
-    console.log(data);
     arduinos.value = data;
 })
 
