@@ -48,7 +48,6 @@ const onViewDataClick = (e) => {
     return response.json();
   })
   .then(data => {
-      console.log('Login successful:', data);
       auth.setToken(data.access_token);
       //naviga alla view dati
       router.push(`${selectedArduino.value}/dati`);
