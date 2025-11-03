@@ -29,7 +29,7 @@ const onViewDataClick = (e) => {
   console.log(`MAC Address: ${macaddress}`);
   //effettua login
   
-  fetch(`https://ard24lguerrini.pythonanywhere.com/api/auths`, {
+  fetch(`https://ard24lguerrini.pythonanywhere.com/api/auths/`, {
       method: "POST",
       headers: {
           "Content-Type": "application/json",
