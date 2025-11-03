@@ -10,7 +10,7 @@ const router = createRouter({
       component: LoginView
     },
     {
-      path: '/dati',
+      path: '/:id/dati',
       component: DatiView
     },
   ]});

@@ -1,10 +1,12 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { useAuth } from '../composables/auth';
 
 const arduinos =ref([]);
 const selectedArduino = ref(null);
 const router = useRouter();
+const auth = useAuth();
 
 fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/`, {
     method: "GET",
@@ -46,9 +48,11 @@ const onViewDataClick = (e) => {
     return response.json();
   })
   .then(data => {
-      console.log(data);
+      console.log('Login successful:', data);
+      auth.setToken(data.access_token);
       //naviga alla view dati
-      //router.push({ name: 'dati', params: { macaddress: macaddress } });
+      router.push(`${selectedArduino.value}/dati`);
+      
   });
 };
 </script>
