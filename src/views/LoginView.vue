@@ -56,6 +56,10 @@ const onViewDataClick = (e) => {
 </script>
 
 <template>
+  <div style="display: flex;
+   flex-direction: column;
+   align-items: center;
+    gap: 10px;">
   <h1>Login View</h1>
   <select v-model="selectedArduino">
     <option v-for="arduino in arduinos" 
@@ -67,4 +71,6 @@ const onViewDataClick = (e) => {
     :disabled="isViewDataButtonDisabled()">
     Vai ai dati
   </button>
+  </div>
+
 </template>

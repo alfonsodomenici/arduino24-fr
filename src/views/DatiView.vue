@@ -42,10 +42,7 @@ fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/${arduinoId}/dati/
     chartData.value = {
         labels: data.map(v => new Date(v.data_ora).toLocaleString()),
         datasets: [ { label: "LUCE",data:data.map(v => v.valore) } ]
-      }
-    chartOptions.value = {
-        responsive: true
-    }
+    };
     
 })
 .catch(error => {
