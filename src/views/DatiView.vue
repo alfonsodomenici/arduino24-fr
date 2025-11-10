@@ -2,17 +2,24 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuth } from '../composables/auth';
-import { Line    } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip,PointElement, LineElement, Legend, CategoryScale, LinearScale } from 'chart.js'
+
 
 const arduinoDetails = ref({});
+const datiRx = ref([]);
 const datiByTipo = ref(null);
 const auth = useAuth();
 const route = useRoute();
 const arduinoId = route.params.id;
 const token = auth.getToken();
 console.log(`Token recuperato: ${token}`);
-
-
+const chartData=ref({
+        labels: [  ],
+        datasets: [ { data: [] } ]
+      });
+const chartOptions=ref({ responsive: true});
+ChartJS.register(Title, Tooltip, Legend, PointElement,LineElement, CategoryScale, LinearScale);
 
 //leggo i dati associati all'arduino
 fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/${arduinoId}/dati/`, {
@@ -31,10 +38,15 @@ fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/${arduinoId}/dati/
 })
 .then(data => {
     console.log('Dati ricevuti:', data);
-    datiByTipo.value = Map.groupBy(data,(d) => d.tipo);
-    const bydate = Map.groupBy(datiByTipo.value.get('LIGHT'),(d) => new Date(d.data_ora).toDateString());
-    console.log('Dati raggruppati per tipo:', datiByTipo.value);
-    console.log('Dati LIGHT raggruppati per data:', bydate);
+    datiRx.value = data;
+    chartData.value = {
+        labels: data.map(v => new Date(v.data_ora).toLocaleString()),
+        datasets: [ { label: "LUCE",data:data.map(v => v.valore) } ]
+      }
+    chartOptions.value = {
+        responsive: true
+    }
+    
 })
 .catch(error => {
     console.error('Errore durante il recupero dei dati:', error);
@@ -65,12 +77,36 @@ fetch(`https://ard24lguerrini.pythonanywhere.com/api/arduinos/${arduinoId}`, {
 
 </script>
 <template>
-  <h1>Dati View</h1>
   <div>
     <h2>Arduino Selezionato:</h2>
     <p>ID: {{ arduinoDetails.id }}</p>
     <p>Nome: {{ arduinoDetails.nome }}</p>
     <p>MAC Address: {{ arduinoDetails.macaddress }}</p>
   </div>
+
+  <h2>Grafico</h2>
+  <Line style="width: 100%;"
+    :options="chartOptions"
+    :data="chartData"
+    arial-label="luce"
+    aria-describedby="tb" />
+
+  <h2>Tabella dati</h2>
+  <table id="tb">
+    <thead>
+        <th>ID</th>
+        <th>TIPO</th>
+        <th>DATA</th>
+        <th>LETTURA</th>
+    </thead>
+    <tbody>
+        <tr v-for="v in datiRx">
+            <td>{{ v.id }}</td>
+            <td>{{ v.tipo }}</td>
+            <td>{{ new Date(v.data_ora).toLocaleString() }}</td>
+            <td>{{ v.valore }}</td>
+        </tr>
+    </tbody>
+  </table>
 
 </template>
